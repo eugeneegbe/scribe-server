@@ -1,0 +1,6 @@
+SECRET_KEY: '$(python -c "import os; print repr(os.urandom(24))")'
+SQLALCHEMY_DATABASE_URI: 'mysql://root:agboreugene7@localhost/scribe'
+
+SQLALCHEMY_POOL_RECYCLE: 90
+
+# SQLALCHEMY_DATABASE_URI: 'mysql+pymysql://s54010:XzuhEko9giM1bkNX@clouddb1001/sxxxxx__scribe'

@@ -1,0 +1,7 @@
+flask
+mysqlclient
+PyMySQL
+coverage
+flask_sqlalchemy
+pyyaml
+nose2
