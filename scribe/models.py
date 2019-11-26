@@ -18,7 +18,7 @@ class Article(db.Model):
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    label = db.Column(db.String(200), unique=True, nullable=False)
+    label = db.Column(db.String(150), unique=True, nullable=False)
     article_name = db.Column(db.Text)
     lang_code = db.Column(db.String(3))
 
@@ -33,7 +33,7 @@ class Section(db.Model):
 class Edit(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     article_name = db.Column(db.Text, nullable=False)
-    section_label = db.Column(db.String(200))
+    section_label = db.Column(db.String(150))
     content = db.Column(db.Text)
     url = db.Column(db.Text)
     domain = db.Column(db.String(100))

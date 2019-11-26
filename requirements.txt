@@ -5,3 +5,4 @@ coverage
 flask_sqlalchemy
 pyyaml
 nose2
+flask-cors

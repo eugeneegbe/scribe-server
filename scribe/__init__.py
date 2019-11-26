@@ -2,6 +2,7 @@ import os
 
 import yaml
 from flask import Flask, request, session
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -16,6 +17,9 @@ app.config['SECRET_KEY']
 app.config['TEMPLATES_AUTO_RELOAD']
 
 db = SQLAlchemy(app)
+
+# Enble CORS on application
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # we import all our blueprint routes here
 from scribe.main.routes import main
