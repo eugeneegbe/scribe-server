@@ -1,3 +1,6 @@
 main/__pycache__
 scribe/main/__pycache__/
 scribe/__pycache__/
+.tox/
+.vscode/
+scribe/.tox.ini.swp
