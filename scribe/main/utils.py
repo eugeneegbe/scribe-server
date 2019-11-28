@@ -4,7 +4,7 @@ import sys
 from scribe.models import Edit, Section
 
 
-def get_reference_resource_data(article_name):
+def get_reference_resource_data(section_name):
     """
     Get proposed content about an article
 
@@ -13,7 +13,7 @@ def get_reference_resource_data(article_name):
     """
     resource_object = {}
     resource_object['resources'] = []
-    edit_data = Edit.query.filter_by(article_name=article_name.lower()).all()
+    edit_data = Edit.query.filter_by(section_label=section_name).all()
     for data in edit_data:
         data_object = {}
         data_object['section_label'] = data.section_label
@@ -21,7 +21,7 @@ def get_reference_resource_data(article_name):
         data_object['url'] = data.url
         data_object['domain'] = data.domain
         resource_object['resources'].append(data_object)
-    resource_object['article_name'] = article_name
+    # resource_object['article_name'] = article_name
     return resource_object
 
 
