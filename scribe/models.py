@@ -29,6 +29,7 @@ class Section(db.Model):
     order_number = db.Column(db.Integer)
     content_selection_method = db.Column(db.Text)
     lang_code = db.Column(db.String(7))
+    quality = db.Column(db.String(25))
     retrieved_date = db.Column(db.Date, nullable=False,
                             default=datetime.now().strftime('%Y-%m-%d'))   
 
@@ -48,6 +49,7 @@ class Reference(db.Model):
     publication_title = db.Column(db.Text)
     summary = db.Column(db.Text)
     url = db.Column(db.Text)
+    quality = db.Column(db.String(25))
     publication_date = db.Column(db.Date, nullable=False,
                     default=datetime.now().strftime('%Y-%m-%d'))
     retrieved_date = db.Column(db.Date, nullable=False,
