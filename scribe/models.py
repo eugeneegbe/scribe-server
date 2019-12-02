@@ -6,47 +6,82 @@ class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.Text, nullable=False)
     wd_q_id = db.Column(db.String(20), unique=True)
-    lang_code = db.Column(db.String(3))
+    lang_code = db.Column(db.String(7))
+    domain = db.Column(db.Text)
+    tag = db.Column(db.Text)
+    retrieved_date = db.Column(db.Date, nullable=False,
+                    default=datetime.now().strftime('%Y-%m-%d'))
 
     def __repr__(self):
         # This is what is shown when object is printed
-        return "Article({}, {}, {})".format(
+        return "Article({}, {}, {}, {}, {})".format(
                self.name,
                self.wd_q_id,
-               self.lang_code)
+               self.lang_code,
+               self.domain,
+               self.tag)
 
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     label = db.Column(db.String(150), unique=True, nullable=False)
-    article_name = db.Column(db.Text)
-    lang_code = db.Column(db.String(3))
+    article_id = db.Column(db.Text)
+    order_number = db.Column(db.Integer)
+    content_selection_method = db.Column(db.Text)
+    lang_code = db.Column(db.String(7))
+    retrieved_date = db.Column(db.Date, nullable=False,
+                            default=datetime.now().strftime('%Y-%m-%d'))   
 
     def __repr__(self):
         # This is what is shown when object is printed
         return "Section({}, {}, {})".format(
                self.label,
-               self.article_name,
+               self.article_id,
                self.lang_code)
 
 
-class Edit(db.Model):
+class Reference(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    article_name = db.Column(db.Text, nullable=False)
-    section_label = db.Column(db.String(150))
-    content = db.Column(db.Text)
+    article_id = db.Column(db.Integer)
+    section_id = db.Column(db.Integer)
+    publisher_name = db.Column(db.Text)
+    publication_title = db.Column(db.Text)
+    summary = db.Column(db.Text)
     url = db.Column(db.Text)
-    domain = db.Column(db.String(100))
-    lang_code = db.Column(db.String(3))
-    date = db.Column(db.Date, nullable=False,
-                     default=datetime.now().strftime('%Y-%m-%d'))
+    publication_date = db.Column(db.Date, nullable=False,
+                    default=datetime.now().strftime('%Y-%m-%d'))
+    retrieved_date = db.Column(db.Date, nullable=False,
+                    default=datetime.now().strftime('%Y-%m-%d'))
+    content_selection_method = db.Column(db.Text)
 
     def __repr__(self):
         # This is what is shown when object is printed
-        return "Change({}, {}, {}, {}, {}, {})".format(
-               self.article_name,
-               self.section_label,
-               self.content,
+        return "Reference({}, {}, {}, {}, {}, {})".format(
+               self.publisher_name,
+               self.publication_title,
+               self.summary,
                self.domain,
                self.url,
                self.lang_code)
+
+
+class Statistics(db.Model):
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    article_id = db.Column(db.Integer)
+    created = db.Column(db.Boolean, nullable=True)
+    sandbox = db.Column(db.Boolean, nullable=True)
+    timestamp = db.Column(db.Date, nullable=True,
+                    default=datetime.now().strftime('%Y-%m-%d'))
+    references_used = db.Column(db.String(25), nullable=False) # Concatenation of the reference_ids
+    sections_used = db.Column(db.String(25), nullable=False) # Concatenation of the section_ids
+    mobile = db.Column(db.Boolean, nullable=True)
+
+    def __repr__(self):
+        # This is what is shown when object is printed
+        return "Statistics({}, {}, {}, {}, {}, {})".format(
+               self.article_id,
+               self.created,
+               self.sandbox,
+               self.timestamp,
+               self.references_used,
+               self.sections_used)

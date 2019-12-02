@@ -1,7 +1,7 @@
 
 import sys
 
-from scribe.models import Edit, Section
+from scribe.models import Section, Article
 
 
 def get_reference_resource_data(section_name):
