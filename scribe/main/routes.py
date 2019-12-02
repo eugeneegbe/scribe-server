@@ -8,14 +8,14 @@ from scribe.main.utils import get_reference_resource_data, get_section_data
 main = Blueprint('main', __name__)
 
 
-@main.route('/api/v1')
+@main.route('/api/v1/references')
 def getReferencesData():
     section_name = request.args.get('section')
     resource_data = get_reference_resource_data(section_name)
     if resource_data:
         return resource_data
     else:
-        return '<h2> Welcome to Scribe service</h2>'
+        return '<h2> Unable to get data at the moment</h2>'
 
 
 @main.route('/api/v1/sections')

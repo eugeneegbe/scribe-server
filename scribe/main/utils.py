@@ -1,37 +1,46 @@
 
 import sys
 
-from scribe.models import Section, Article
+from scribe.models import Section, Article, Reference
 
 
 def get_reference_resource_data(section_name):
     """
-    Get proposed content about an article
+    Get proposed references about an article's section
 
     Keyword arguments:
-    article_name -- name of the article whose data is to be obtained
+    article_name -- name of the sectioin whose references are to be obtained
     """
     resource_object = {}
     resource_object['resources'] = []
-    edit_data = Edit.query.filter_by(section_label=section_name).all()
-    for data in edit_data:
+    section = Section.query.filter_by(label=section_name).first()
+    print(section, file=sys.stderr)
+
+    reference_data = Reference.query.filter_by(section_id=section.id).all()
+    for data in reference_data:
         data_object = {}
-        data_object['section_label'] = data.section_label
-        data_object['content'] = data.content
+        data_object['section_label'] = section_name
+        data_object['content'] = data.summary
         data_object['url'] = data.url
-        data_object['domain'] = data.domain
+        data_object['domain'] = Article.query.filter_by(id=section.article_id).first().domain
         resource_object['resources'].append(data_object)
     # resource_object['article_name'] = article_name
     return resource_object
 
 
 def get_section_data(article_name):
+    """
+    Get proposed sections about an article
+
+    Keyword arguments:
+    article_name -- name of the article whose sections is to be obtained
+    """
     section_count = 0
     all_sections_data = {}
     parse = {}
     sections = []
-    sections_data = Section.query.filter_by(article_name=article_name.lower()   ).all()
-    print(sections_data, file=sys.stderr)
+    article = Article.query.filter_by(name=article_name.lower()).first()
+    sections_data = Section.query.filter_by(article_id=article.id).all()
     for section_data in sections_data:
         section = {}
         section['line'] = section_data.label
