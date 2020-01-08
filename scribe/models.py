@@ -58,13 +58,11 @@ class Reference(db.Model):
 
     def __repr__(self):
         # This is what is shown when object is printed
-        return "Reference({}, {}, {}, {}, {}, {})".format(
+        return "Reference({}, {}, {}, {})".format(
                self.publisher_name,
                self.publication_title,
                self.summary,
-               self.domain,
-               self.url,
-               self.lang_code)
+               self.url)
 
 
 class Statistics(db.Model):

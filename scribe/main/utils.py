@@ -27,6 +27,15 @@ def get_reference_resource_data(section_name):
     # resource_object['article_name'] = article_name
     return resource_object
 
+def get_reference_data(url):
+    reference_data = {}
+    reference = Reference.query.filter_by(url=url).first()
+    print(url, file=sys.stderr)
+    reference_data['publisher_name'] = reference.publisher_name
+    reference_data['publication_title'] = reference.publication_title
+    reference_data['publication_date'] = reference.publication_date
+    reference_data['retrieved_date'] = reference.retrieved_date
+    return reference_data
 
 def get_section_data(article_name):
     """
