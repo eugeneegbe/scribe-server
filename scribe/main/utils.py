@@ -4,7 +4,7 @@ import sys
 from scribe.models import Section, Article, Reference
 
 
-def get_reference_resource_data(section_name):
+def get_reference_resource_data(article_name, section_name):
     """
     Get proposed references about an article's section
 
@@ -13,10 +13,31 @@ def get_reference_resource_data(section_name):
     """
     resource_object = {}
     resource_object['resources'] = []
-    section = Section.query.filter_by(label=section_name).first()
-    print(section, file=sys.stderr)
+    article_id = Article.query.filter_by(name=article_name).first().id
+    sections = Section.query.filter_by(label=section_name).all()
+    active_section = None
 
-    reference_data = Reference.query.filter_by(section_id=section.id).all()
+    # Collect sections of particular article
+    for section in sections:
+        if section.article_id == str(article_id):
+            active_section = section
+
+    # We get that sections references
+    reference_data = Reference.query.filter_by(section_id=active_section.id).all()
+    # Add references of that article which do not have a section
+    other_reference_data = Reference.query.filter_by(article_id=article_id).all()
+
+    for other_reference in other_reference_data:
+        # check if reference has no specified section
+        if other_reference.section_id == 0:
+                data_object = {}
+                data_object['section_label'] = 'Proposed Reference'
+                data_object['content'] = other_reference.summary
+                data_object['url'] = other_reference.url
+                data_object['domain'] = 'Proposed'
+                resource_object['resources'].append(data_object)
+
+
     for data in reference_data:
         data_object = {}
         data_object['section_label'] = section_name

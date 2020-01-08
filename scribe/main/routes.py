@@ -11,7 +11,8 @@ main = Blueprint('main', __name__)
 @main.route('/api/v1/references')
 def getReferencesData():
     section_name = request.args.get('section')
-    resource_data = get_reference_resource_data(section_name)
+    article_name = request.args.get('article')
+    resource_data = get_reference_resource_data(article_name, section_name)
     if resource_data:
         return resource_data
     else:
