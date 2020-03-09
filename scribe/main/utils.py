@@ -31,6 +31,7 @@ def get_reference_resource_data(article_name, section_name):
         # check if reference has no specified section
         if other_reference.section_id == 0:
                 data_object = {}
+                data_object['publication_title'] = other_reference.publication_title
                 data_object['section_label'] = 'Proposed Reference'
                 data_object['content'] = other_reference.summary
                 data_object['url'] = other_reference.url
