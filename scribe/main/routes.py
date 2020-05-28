@@ -1,8 +1,9 @@
 import os
 import sys
+import json
 
 from flask import Blueprint, request
-from scribe.main.utils import get_reference_resource_data, get_section_data, get_reference_data
+from scribe.main.utils import get_reference_resource_data, get_section_data, get_reference_data, add_stats_data
 
 
 main = Blueprint('main', __name__)
@@ -17,6 +18,7 @@ def getReferencesData():
         return resource_data
     else:
         return '<h2> Unable to get data at the moment</h2>'
+
 
 @main.route('/api/v1/references/resources')
 def getReferenceResourceData():
@@ -42,3 +44,14 @@ def getSectionData():
 @main.route('/')
 def home():
     return '<h2> Welcome to Scribe service</h2>'
+
+
+
+@main.route('/api/v1/stats', methods=['POST', 'GET'])
+def getReferenceStatsData():
+    stats_data = json.loads(request.data.decode('utf8'))
+    print(stats_data, file=sys.stderr)
+    if stats_data:
+        add_stats_data(stats_data)
+    else:
+        return '<h2> Unable to get data at the moment</h2>'

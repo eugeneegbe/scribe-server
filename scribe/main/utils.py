@@ -1,8 +1,27 @@
 
 import sys
 
-from scribe.models import Section, Article, Reference
+from scribe import db
 
+from scribe.models import Section, Article, Reference, Statistics
+
+
+def commit_changes_to_db():
+    """
+    Test for the success of a database commit operation.
+
+    """
+    try:
+        db.session.commit()
+    except Exception as e:
+        # TODO: We could add a try catch here for the error
+        print('-------------->>>>>', file=sys.stderr)
+        print(str(e), file=sys.stderr)
+        db.session.rollback()
+        # for resetting non-commited .add()
+        db.session.flush()
+        return True
+    return False
 
 def get_reference_resource_data(article_name, section_name):
     """
@@ -31,7 +50,6 @@ def get_reference_resource_data(article_name, section_name):
         # check if reference has no specified section
         if other_reference.section_id == 0:
                 data_object = {}
-                data_object['publication_title'] = other_reference.publication_title
                 data_object['section_label'] = 'Proposed Reference'
                 data_object['content'] = other_reference.summary
                 data_object['url'] = other_reference.url
@@ -55,8 +73,8 @@ def get_reference_data(url):
     print(url, file=sys.stderr)
     reference_data['publisher_name'] = reference.publisher_name
     reference_data['publication_title'] = reference.publication_title
-    reference_data['publication_date'] = reference.publication_date
-    reference_data['retrieved_date'] = reference.retrieved_date
+    reference_data['publication_date'] = reference.publication_date.strftime('%d %B %Y')
+    reference_data['retrieved_date'] = reference.retrieved_date.strftime('%d %B %Y')
     return reference_data
 
 def get_section_data(article_name):
@@ -81,3 +99,23 @@ def get_section_data(article_name):
     parse['sections'] = sections
     all_sections_data['parse'] = parse
     return all_sections_data
+
+def add_stats_data(data):
+    """
+    Add stats data about reference to database
+    
+    """
+
+    article_id = Article.query.filter_by(name=data['article']).first().id
+    references_used = data['ref']
+    sections_used = data['selectedSection']
+    statistic = Statistics(article_id=article_id, references_used=references_used,
+                           sections_used=sections_used)
+    db.session.add(statistic)
+    if commit_changes_to_db():
+        print(data['article'], file=sys.stderr )
+        return ('Failure')
+    else:
+        return ('Success')
+    return ('Failure')
+
