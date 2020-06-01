@@ -1,6 +1,8 @@
 
 import sys
 
+import json
+
 from scribe import db
 
 from scribe.models import Section, Article, Reference, Statistics
@@ -118,4 +120,22 @@ def add_stats_data(data):
     else:
         return ('Success')
     return ('Failure')
+
+
+def get_stats_data(url):
+    """Get reference stats data
+
+    """
+    stats_data = {}
+    sections = []
+    statistic_data = Statistics.query.filter_by(references_used=url).all()
+    
+    for stat in statistic_data:
+        sections.append(stat.sections_used)
+    
+    stats_data['sections'] = list(set(sections))
+    stats_data['frequency'] = len(statistic_data)
+
+    return  json.dumps(stats_data)
+
 

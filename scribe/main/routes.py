@@ -3,7 +3,7 @@ import sys
 import json
 
 from flask import Blueprint, request
-from scribe.main.utils import get_reference_resource_data, get_section_data, get_reference_data, add_stats_data
+from scribe.main.utils import get_reference_resource_data, get_section_data, get_reference_data, add_stats_data, get_stats_data
 
 
 main = Blueprint('main', __name__)
@@ -48,10 +48,20 @@ def home():
 
 
 @main.route('/api/v1/stats', methods=['POST', 'GET'])
-def getReferenceStatsData():
+def AddReferenceStatsData():
     stats_data = json.loads(request.data.decode('utf8'))
     print(stats_data, file=sys.stderr)
     if stats_data:
         add_stats_data(stats_data)
     else:
         return '<h2> Unable to get data at the moment</h2>'
+
+
+@main.route('/api/v1/stats/references', methods=['POST', 'GET'])
+def getReferenceStatsData():
+    url = request.args.get('url')
+    if url is None:
+        return '<h2> Unable to get data at the moment</h2>'
+    else:
+        return get_stats_data(url)
+
