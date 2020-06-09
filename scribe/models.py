@@ -5,7 +5,7 @@ from scribe import db
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
     name = db.Column(db.Text, nullable=False)
-    wd_q_id = db.Column(db.String(20), unique=True)
+    wd_q_id = db.Column(db.String(20), nullable=False)
     lang_code = db.Column(db.String(7))
     domain = db.Column(db.Text)
     tag = db.Column(db.Text)
@@ -46,6 +46,7 @@ class Reference(db.Model):
     article_id = db.Column(db.Integer)
     section_id = db.Column(db.Integer)
     publisher_name = db.Column(db.Text)
+    wd_q_id = db.Column(db.String(20), nullable=False)
     publication_title = db.Column(db.Text)
     summary = db.Column(db.Text)
     url = db.Column(db.Text)

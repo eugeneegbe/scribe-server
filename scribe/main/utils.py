@@ -8,11 +8,14 @@ from scribe import db
 from scribe.models import Section, Article, Reference, Statistics
 
 
-def commit_changes_to_db():
+def commit_changes_to_db(data=None):
     """
     Test for the success of a database commit operation.
 
     """
+    if data is not None:
+        for d in data:
+            db.session.add(d)
     try:
         db.session.commit()
     except Exception as e:
@@ -66,17 +69,17 @@ def get_reference_resource_data(article_name, section_name):
         data_object['url'] = data.url
         data_object['domain'] = Article.query.filter_by(id=section.article_id).first().domain
         resource_object['resources'].append(data_object)
-    # resource_object['article_name'] = article_name
+    resource_object['article_name'] = article_name
     return resource_object
 
 def get_reference_data(url):
     reference_data = {}
     reference = Reference.query.filter_by(url=url).first()
-    print(url, file=sys.stderr)
+    print(reference, file=sys.stderr)
     reference_data['publisher_name'] = reference.publisher_name
     reference_data['publication_title'] = reference.publication_title
-    reference_data['publication_date'] = reference.publication_date.strftime('%d %B %Y')
-    reference_data['retrieved_date'] = reference.retrieved_date.strftime('%d %B %Y')
+    reference_data['publication_date'] = reference.publication_date #.strftime('%d %B %Y')
+    reference_data['retrieved_date'] = reference.retrieved_date #.strftime('%d %B %Y')
     return reference_data
 
 def get_section_data(article_name):

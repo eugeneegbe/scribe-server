@@ -4,3 +4,6 @@ scribe/__pycache__/
 .tox/
 .vscode/
 scribe/.tox.ini.swp
+.DS_Store
+scribe/db/__pycache__/
+scribe/config.yaml
