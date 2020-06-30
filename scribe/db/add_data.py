@@ -98,8 +98,8 @@ def extract_reference_data(ref_domains, ref_data_file):
 					if domain == entry_data['publisher_name']:
 						ref = Reference(publisher_name = entry_data['publisher_name'],
 									    wd_q_id = entry_data['wd_q_id'],
-									    publication_title = entry_data['publication_title'],
-									    summary = entry_data['summary'],
+									    publication_title = entry_data['publication_title'].encode('unicode_escape'),
+									    summary = entry_data['summary'].encode('unicode_escape'),
 									    url = entry_data['url'],
 									    quality = entry_data['quality'],
 									    publication_date = datetime.strptime(entry_data['publication_date'].split('T')[0],
