@@ -74,7 +74,7 @@ def get_reference_resource_data(article_name, section_name):
 
 def get_reference_data(url):
     reference_data = {}
-    reference = Reference.query.filter_by(url=url).first()
+    reference = Reference.query.filter_by(url=Refere).first()
     print(reference, file=sys.stderr)
     reference_data['publisher_name'] = reference.publisher_name
     reference_data['publication_title'] = reference.publication_title
