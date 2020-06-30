@@ -24,7 +24,7 @@ class Article(db.Model):
 
 class Section(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    label = db.Column(db.String(150), unique=True, nullable=False)
+    label = db.Column(db.String(150), nullable=False)
     article_id = db.Column(db.Text)
     order_number = db.Column(db.Integer)
     content_selection_method = db.Column(db.Text)
