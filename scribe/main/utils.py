@@ -3,6 +3,8 @@ import sys
 
 import json
 
+from urllib.parse import urlsplit
+
 from scribe import db
 
 from scribe.models import Section, Article, Reference, Statistics
@@ -160,3 +162,30 @@ def get_stats_data(url):
     return  json.dumps(stats_data)
 
 
+def get_object_first_key_value(data_object):
+    key_value = []
+    if len(data_object) > 0:
+        iterator = iter(data_object)
+        key = next(iterator)
+        value = data_object[key]
+        key_value.append(key)
+
+        if len(value) > 0:
+            key_value.append(value)
+        else:
+            key_value.append('')
+    else:
+        key_value.append('')
+        key_value.append('')
+
+    return key_value
+
+def get_base_url(url):
+    try:
+        netloc = urlsplit(url).netloc
+        if netloc.startswith("www."):
+            netloc = netloc.replace("www.","")
+        return netloc if len(netloc) > 0 else None
+    except:
+        print("cannot get base url for {}".format(url))
+        return None

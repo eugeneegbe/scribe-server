@@ -3,7 +3,8 @@ import sys
 import json
 
 from flask import Blueprint, request
-from scribe.main.utils import get_reference_resource_data, get_section_data, get_reference_data, add_stats_data, get_stats_data
+from scribe.main.utils import (get_reference_resource_data, get_section_data, get_reference_data,
+                               add_stats_data, get_stats_data)
 
 
 main = Blueprint('main', __name__)

@@ -7,8 +7,8 @@ import json
 
 from datetime import datetime
 
-from scribe.models import Article, Reference, Section
-from scribe.main.utils import commit_changes_to_db
+from scribe.models import Article, Reference, Section, Domain
+from scribe.main.utils import commit_changes_to_db, get_base_url, get_object_first_key_value
 
 
 def extract_article_data(file, lang_code):
@@ -136,7 +136,50 @@ def create_article_sections(article_options):
 
 
 def extract_domain_data(domain_data_file):
-	pass
+	domain_data = []
+	all_references = Reference.query.all()
+	with open(domain_data_file) as f:
+		lines = f.readlines()
+		if lines:
+			# file is not empty
+			for line in lines:
+
+				data = json.loads(line)
+				
+				for reference in all_references:
+					
+					ref_base_url = get_base_url(reference.url)
+					score_info = data['scores']['wikidata']
+
+					if data['domain'] == ref_base_url and score_info is not None:
+						# extract key values of the twitter entry in score
+						score_key_value = get_object_first_key_value(score_info[0]['twitter'])
+
+						# Extract relevant info in data object
+						domain_name = data['domain']
+						wikipedia_score = data['scores']['wikipedia']
+						wikipedia_domain = data['scores']['wikipediadomain']
+						search_result_score = data['scores']['search_result_score']
+
+						# Extract relevant info in data['score']
+						en_title = score_info[0]['en_title']
+						wd_q_id = score_info[0]['qid']
+
+						# Extract relevent info in data['score']['wikidata']['twitter']
+						twitter_handle = score_key_value[0]
+						twitter_followers = score_key_value[1]
+
+						domain = Domain(domain_name=domain_name, wikipedia_score=wikipedia_score,
+										wikipedia_domain=wikipedia_domain,
+										search_result_score=search_result_score,
+										en_title=en_title,
+										wd_q_id=wd_q_id,
+										twitter_handle=twitter_handle,
+										twitter_followers=twitter_followers)
+						domain_data.append(domain)
+
+	return domain_data
+
 
 def write_data(article_data):
 
