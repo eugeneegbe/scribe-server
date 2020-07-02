@@ -57,55 +57,32 @@ def extract_article_data(file, lang_code):
 							 domain=article['domain']) for article in article_data]
 	return article_data
 
-def extract_reference_data(ref_domains, ref_data_file):
+def extract_reference_data(file, lang_code):
 	'''Extracts reference data from the file and sends object of the data to db
 
-	STEPS TO ADD ARTICLE/REFERENCE DATA ON COMMAND LINE
-
-	from scribe import db
-	from scribe.db.add_data import extract_article_data, extract_reference_data, write_data
-
-	ca_article_data = extract_article_data('scribe/db/ca_article_data.tsv', 'ca')
-	ar_article_data = extract_article_data('scribe/db/ar_article_data.tsv', 'ar')
-
-	write_data(ca_article_data)
-	write_data(ar_article_data)
-
-	ca_ref_data = extract_reference_data('scribe/db/ca_ref.txt')
-	ar_ref_data = ('scribe/db/ar_ref.txt')
-
-
-	write_data(ca_ref_data)
-	write_data(ar_ref_data)
 	'''
 
 	reference_data = []
 
-	with open(ref_domains) as f:
+	with open(file) as f:
 		lines = f.readlines()
-		lines = [line.replace('\n','') for line in lines]
 
-		file_data = json.loads(lines[0])
-		file_data = [json.loads(line) for line in lines]
-
-		for data in file_data:
-			domain = data['domain']
-			with open(ref_data_file) as f:
-				lines = f.readlines()
-				lines = [line.replace('\n','') for line in lines]
-				summary_data = json.loads(lines[0])
-				for entry_data in summary_data:
-					if domain == entry_data['publisher_name']:
-						ref = Reference(publisher_name = entry_data['publisher_name'],
-									    wd_q_id = entry_data['wd_q_id'],
-									    publication_title = entry_data['publication_title'].encode('unicode_escape'),
-									    summary = entry_data['summary'].encode('unicode_escape'),
-									    url = entry_data['url'],
-									    quality = entry_data['quality'],
-									    publication_date = datetime.strptime(entry_data['publication_date'].split('T')[0],
-									    									 '%Y-%m-%d'),
-									    content_selection_method = entry_data['content_selection_method'])
-						reference_data.append(ref)
+		if lines:
+			# file is not empty
+			file_data = json.loads(lines[0])
+			for data in file_data:
+				reference = Reference(publisher_name=data['publisher_name'], 
+									  wd_q_id=data['wd_q_id'],
+									  publication_title=data['publication_title'].encode('unicode_escape'),
+									  summary=data['summary'].encode('unicode_escape'),
+									  url=data['url'],
+									  quality=data['quality'],
+									  lang_code = lang_code,
+									  publication_date=datetime.strptime(data['publication_date'].split('T')[0], '%Y-%m-%d'),
+									  content_selection_method=data['content_selection_method'])
+				reference_data.append(reference)
+		else:
+			pass # report an error here
 
 	return reference_data
 
@@ -114,7 +91,7 @@ def check_article_type(language):
 	articles = Article.query.filter_by(lang_code=language[:2]).all()
 
 	article_options = []
-	root = 'scribe/db/data/'+ language
+	root = 'scribe/db/data/' + language
 
 	for article in articles:
 		article_option = {}
@@ -124,7 +101,7 @@ def check_article_type(language):
 			if os.path.isfile(root + os.sep + fname):
 				f = open(root + os.sep + fname, 'r')
 				if article.wd_q_id in f.read():
-					article_types.append( root + '/'+ fname.split('.')[0] +'-sections.tsv' )
+					article_types.append( root + '/' + fname.split('.')[0] +'-sections.tsv' )
 				# add article type to type array
 				f.close()
 		if len(article_types) > 0:
@@ -157,6 +134,9 @@ def create_article_sections(article_options):
 			f.close()
 	return article_sections
 
+
+def extract_domain_data(domain_data_file):
+	pass
 
 def write_data(article_data):
 

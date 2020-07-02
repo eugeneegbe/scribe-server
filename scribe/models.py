@@ -48,6 +48,7 @@ class Reference(db.Model):
     publisher_name = db.Column(db.Text)
     wd_q_id = db.Column(db.String(20), nullable=False)
     publication_title = db.Column(db.Text)
+    lang_code = db.Column(db.String(7))
     summary = db.Column(db.Text)
     url = db.Column(db.Text)
     quality = db.Column(db.String(25))
@@ -73,7 +74,7 @@ class Statistics(db.Model):
     sandbox = db.Column(db.Boolean, nullable=True)
     timestamp = db.Column(db.Date, nullable=True,
                     default=datetime.now().strftime('%Y-%m-%d'))
-    references_used = db.Column(db.String(25), nullable=False) # Concatenation of the reference_ids
+    references_used = db.Column(db.String(500), nullable=False) # Concatenation of the reference_ids
     sections_used = db.Column(db.String(25), nullable=False) # Concatenation of the section_ids
     mobile = db.Column(db.Boolean, nullable=True)
 
@@ -86,3 +87,27 @@ class Statistics(db.Model):
                self.timestamp,
                self.references_used,
                self.sections_used)
+
+
+class Domain(db.Model):
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    domain_name = db.Column(db.Text, nullable=False)
+    wikipedia_score = db.Column(db.Integer)
+    wikipedia_domain = db.Column(db.Integer)
+    search_result_score = db.Column(db.String(15))
+    en_title = db.Column(db.Text)
+    wd_q_id = db.Column(db.String(20), nullable=False)
+    twitter_handle = db.Column(db.String(25), nullable=False)
+    twitter_followers = db.Column(db.String(25), nullable=False)
+
+    def __repr__(self):
+        # This is what is shown when object is printed
+        return "Domain({}, {}, {}, {}, {}, {}, {}, {})".format(
+               self.domain_name,
+               self.wikipedia_score,
+               self.wikipedia_domain,
+               self.search_result_score,
+               self.en_title,
+               self.wd_q_id,
+               twitter_handle,
+               twitter_followers)

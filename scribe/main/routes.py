@@ -11,9 +11,14 @@ main = Blueprint('main', __name__)
 
 @main.route('/api/v1/references')
 def getReferencesData():
-    section_name = request.args.get('section')
+    '''
+    Get references for a particular article 
+    TODO: Add posibility to get references by section
+    '''
+
+    # section_name = request.args.get('section')
     article_name = request.args.get('article')
-    resource_data = get_reference_resource_data(article_name, section_name)
+    resource_data = get_reference_resource_data(article_name)
     if resource_data:
         return resource_data
     else:
@@ -22,13 +27,15 @@ def getReferencesData():
 
 @main.route('/api/v1/references/resources')
 def getReferenceResourceData():
+    '''
+    Get data about reference url which will be used to construct template for VE
+    '''
     url = request.args.get('link')
-    print(request.args, file=sys.stderr)
     reference_data = get_reference_data(url)
     if reference_data:
         return reference_data
     else:
-        return '<h2> Unable to get data at the moment</h2>'
+        return '<h2> This url has no reference in our records</h2>'
 
 
 @main.route('/api/v1/sections')
@@ -50,12 +57,12 @@ def home():
 @main.route('/api/v1/stats', methods=['POST', 'GET'])
 def AddReferenceStatsData():
     stats_data = json.loads(request.data.decode('utf8'))
-    print(stats_data, file=sys.stderr)
+    # print(stats_data, file=sys.stderr)
     if stats_data:
         add_stats_data(stats_data)
     else:
         return '<h2> Unable to get data at the moment</h2>'
-
+    return ('Success')
 
 @main.route('/api/v1/stats/references', methods=['POST', 'GET'])
 def getReferenceStatsData():

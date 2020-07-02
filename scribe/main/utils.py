@@ -28,7 +28,7 @@ def commit_changes_to_db(data=None):
         return True
     return False
 
-def get_reference_resource_data(article_name, section_name):
+def get_reference_resource_data(article_name):
     """
     Get proposed references about an article's section
 
@@ -37,49 +37,67 @@ def get_reference_resource_data(article_name, section_name):
     """
     resource_object = {}
     resource_object['resources'] = []
-    article_id = Article.query.filter_by(name=article_name).first().id
-    sections = Section.query.filter_by(label=section_name).all()
-    active_section = None
+    article = Article.query.filter_by(name=article_name).first()
+    # article_id = Article.query.filter_by(name=article_name).first().id
+    # sections = Section.query.filter_by(label=section_name).all()
+    # active_section = None
 
-    # Collect sections of particular article
-    for section in sections:
-        if section.article_id == str(article_id):
-            active_section = section
+    # # Collect sections of particular article
+    # for section in sections:
+    #     if section.article_id == str(article_id):
+    #         active_section = section
 
-    # We get that sections references
-    reference_data = Reference.query.filter_by(section_id=active_section.id).all()
-    # Add references of that article which do not have a section
-    other_reference_data = Reference.query.filter_by(article_id=article_id).all()
+    # # We get that sections references
+    # reference_data = Reference.query.filter_by(section_id=active_section.id).all()
+    # # Add references of that article which do not have a section
+    # other_reference_data = Reference.query.filter_by(article_id=article_id).all()
 
-    for other_reference in other_reference_data:
-        # check if reference has no specified section
-        if other_reference.section_id == 0:
-                data_object = {}
-                data_object['section_label'] = 'Proposed Reference'
-                data_object['content'] = other_reference.summary
-                data_object['url'] = other_reference.url
-                data_object['domain'] = 'Proposed'
-                resource_object['resources'].append(data_object)
+    # for other_reference in other_reference_data:
+    #     # check if reference has no specified section
+    #     if other_reference.section_id == 0:
+    #             data_object = {}
+    #             data_object['section_label'] = 'Proposed Reference'
+    #             data_object['content'] = other_reference.summary
+    #             data_object['url'] = other_reference.url
+    #             data_object['domain'] = 'Proposed'
+    #             resource_object['resources'].append(data_object)
 
 
-    for data in reference_data:
+    # for data in reference_data:
+    #     data_object = {}
+    #     data_object['section_label'] = section_name
+    #     data_object['content'] = data.summary
+    #     data_object['url'] = data.url
+    #     data_object['domain'] = Article.query.filter_by(id=section.article_id).first().domain
+    #     resource_object['resources'].append(data_object)
+    # resource_object['article_name'] = article_name
+
+    # get the article language code to be used to fetch references in same language
+    article_lang_code = article.lang_code
+
+
+    # collect all references in that language code
+    all_reference_data = Reference.query.filter_by(lang_code=article_lang_code).all()
+    # limit to first 450 results
+    all_reference_data = all_reference_data[:200]
+    for data in all_reference_data:
         data_object = {}
-        data_object['section_label'] = section_name
         data_object['content'] = data.summary
         data_object['url'] = data.url
-        data_object['domain'] = Article.query.filter_by(id=section.article_id).first().domain
+        data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
         resource_object['resources'].append(data_object)
     resource_object['article_name'] = article_name
     return resource_object
 
+
 def get_reference_data(url):
     reference_data = {}
-    reference = Reference.query.filter_by(url=Refere).first()
-    print(reference, file=sys.stderr)
-    reference_data['publisher_name'] = reference.publisher_name
-    reference_data['publication_title'] = reference.publication_title
-    reference_data['publication_date'] = reference.publication_date #.strftime('%d %B %Y')
-    reference_data['retrieved_date'] = reference.retrieved_date #.strftime('%d %B %Y')
+    reference = Reference.query.filter_by(url=url).first()
+    if reference is not None:
+        reference_data['publisher_name'] = reference.publisher_name
+        reference_data['publication_title'] = reference.publication_title
+        reference_data['publication_date'] = reference.publication_date #.strftime('%d %B %Y')
+        reference_data['retrieved_date'] = reference.retrieved_date #.strftime('%d %B %Y')
     return reference_data
 
 def get_section_data(article_name):
