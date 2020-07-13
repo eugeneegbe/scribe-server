@@ -30,6 +30,11 @@ def commit_changes_to_db(data=None):
         return True
     return False
 
+def convert_date(date_str):
+    print(date_str, file=sys.stderr)
+    date = date_str.split(' ');
+    return date[1] + ' ' + date[0] + ', ' + date[2]
+
 def get_reference_resource_data(article_name):
     """
     Get proposed references about an article's section
@@ -97,8 +102,8 @@ def get_reference_data(url):
     if reference is not None:
         reference_data['publisher_name'] = reference.publisher_name
         reference_data['publication_title'] = reference.publication_title
-        reference_data['publication_date'] = reference.publication_date #.strftime('%d %B %Y')
-        reference_data['retrieved_date'] = reference.retrieved_date #.strftime('%d %B %Y')
+        reference_data['publication_date'] = convert_date(reference.publication_date.strftime('%d %B %Y'))
+        reference_data['retrieved_date'] = convert_date(reference.retrieved_date.strftime('%d %B %Y'))
     return reference_data
 
 
