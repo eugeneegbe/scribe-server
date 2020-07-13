@@ -7,7 +7,7 @@ from urllib.parse import urlsplit
 
 from scribe import db
 
-from scribe.models import Section, Article, Reference, Statistics
+from scribe.models import Section, Article, Reference, Statistics, Domain
 
 
 def commit_changes_to_db(data=None):
@@ -30,10 +30,12 @@ def commit_changes_to_db(data=None):
         return True
     return False
 
+
 def convert_date(date_str):
     print(date_str, file=sys.stderr)
     date = date_str.split(' ');
     return date[1] + ' ' + date[0] + ', ' + date[2]
+
 
 def get_reference_resource_data(article_name):
     """
@@ -130,6 +132,7 @@ def get_section_data(article_name):
     all_sections_data['parse'] = parse
     return all_sections_data
 
+
 def add_stats_data(data):
     """
     Add stats data about reference to database
@@ -185,6 +188,7 @@ def get_object_first_key_value(data_object):
 
     return key_value
 
+
 def get_base_url(url):
     try:
         netloc = urlsplit(url).netloc
@@ -192,5 +196,18 @@ def get_base_url(url):
             netloc = netloc.replace("www.","")
         return netloc if len(netloc) > 0 else None
     except:
-        print("cannot get base url for {}".format(url))
         return None
+
+
+def get_domain_data(url):
+    domain_info = {}
+    base_url = get_base_url(url)
+    domain = Domain.query.filter_by(domain_name=base_url).first()
+
+    domain_info['wikipedia_score'] = domain.wikipedia_score
+    domain_info['wikipedia_domain'] = domain.wikipedia_domain
+    domain_info['search_result_score'] = domain.search_result_score
+    domain_info['twitter_handle'] = domain.twitter_handle
+    domain_info['twitter_followers'] = domain.twitter_followers
+
+    return domain_info

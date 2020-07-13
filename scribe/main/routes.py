@@ -4,7 +4,7 @@ import json
 
 from flask import Blueprint, request
 from scribe.main.utils import (get_reference_resource_data, get_section_data, get_reference_data,
-                               add_stats_data, get_stats_data)
+                               add_stats_data, get_stats_data, get_domain_data)
 
 
 main = Blueprint('main', __name__)
@@ -37,6 +37,19 @@ def getReferenceResourceData():
         return reference_data
     else:
         return '<h2> This url has no reference in our records</h2>'
+
+
+@main.route('/api/v1/domain')
+def getDomainData():
+    '''
+    Get data about a particular reference domain
+    '''
+    url = request.args.get('link')
+    domain_data = get_domain_data(url)
+    if domain_data:
+        return domain_data
+    else:
+        return '<h2> This domain may not have data in our records</h2>'
 
 
 @main.route('/api/v1/sections')
