@@ -79,12 +79,11 @@ def get_reference_resource_data(article_name):
 
 
     # collect all references in that language code
-    all_reference_data = Reference.query.filter_by(lang_code=article_lang_code).all()
-    # limit to first 450 results
-    all_reference_data = all_reference_data[:200]
+    all_reference_data = Reference.query.filter_by(wd_q_id=article.wd_q_id).all()
     for data in all_reference_data:
         data_object = {}
         data_object['content'] = data.summary
+        data_object['publication_title'] = data.publication_title.decode('unicode_escape')
         data_object['url'] = data.url
         data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
         resource_object['resources'].append(data_object)
@@ -102,6 +101,7 @@ def get_reference_data(url):
         reference_data['retrieved_date'] = reference.retrieved_date #.strftime('%d %B %Y')
     return reference_data
 
+
 def get_section_data(article_name):
     """
     Get proposed sections about an article
@@ -114,7 +114,7 @@ def get_section_data(article_name):
     parse = {}
     sections = []
     article = Article.query.filter_by(name=article_name.lower()).first()
-    sections_data = Section.query.filter_by(article_id=article.id).all()
+    sections_data = Section.query.filter_by(wd_q_id=article.wd_q_id).all()
     for section_data in sections_data:
         section = {}
         section['line'] = section_data.label
