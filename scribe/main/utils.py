@@ -83,7 +83,7 @@ def get_reference_resource_data(article_name):
     for data in all_reference_data:
         data_object = {}
         data_object['content'] = data.summary
-        data_object['publication_title'] = data.publication_title.decode('unicode_escape')
+        data_object['publication_title'] = data.publication_title
         data_object['url'] = data.url
         data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
         resource_object['resources'].append(data_object)
