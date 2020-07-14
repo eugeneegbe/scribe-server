@@ -87,13 +87,16 @@ def get_reference_resource_data(article_name):
 
     # collect all references in that language code
     all_reference_data = Reference.query.filter_by(wd_q_id=article.wd_q_id).all()
+    count = 0
     for data in all_reference_data:
-        data_object = {}
-        data_object['content'] = data.summary
-        data_object['publication_title'] = data.publication_title
-        data_object['url'] = data.url
-        data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
-        resource_object['resources'].append(data_object)
+        if data.lang_code == article.lang_code:
+            count += 1
+            data_object = {}
+            data_object['content'] = data.summary
+            data_object['publication_title'] = data.publication_title
+            data_object['url'] = data.url
+            data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
+            resource_object['resources'].append(data_object)
     resource_object['article_name'] = article_name
     return resource_object
 
@@ -123,11 +126,12 @@ def get_section_data(article_name):
     article = Article.query.filter_by(name=article_name.lower()).first()
     sections_data = Section.query.filter_by(wd_q_id=article.wd_q_id).all()
     for section_data in sections_data:
-        section = {}
-        section['line'] = section_data.label
-        section['number'] = str(section_count + 1)
-        sections.append(section)
-        section_count += 1
+        if section_data.lang_code == article.lang_code:
+            section = {}
+            section['line'] = section_data.label
+            section['number'] = str(section_count + 1)
+            sections.append(section)
+            section_count += 1
     parse['sections'] = sections
     all_sections_data['parse'] = parse
     return all_sections_data
