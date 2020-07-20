@@ -47,17 +47,17 @@ def extract_reference_data(file, lang_code):
 
 	reference_data = []
 
-	with open(file) as f:
-		lines = f.readlines()
+	with open(file, encoding='utf-8') as data_file:
+		file_data = json.loads(data_file.read())
 
-		if lines:
+		if file_data:
+			print(file_data[0])
 			# file is not empty
-			file_data = json.loads(lines[0])
 			for data in file_data:
 				reference = Reference(publisher_name=data['publisher_name'], 
 									  wd_q_id=data['wd_q_id'],
-									  publication_title=data['publication_title'].encode('unicode_escape'),
-									  summary=data['summary'].encode('unicode_escape'),
+									  publication_title=data['publication_title'],
+									  summary=data['summary'],
 									  url=data['url'],
 									  quality=data['quality'],
 									  lang_code = lang_code,

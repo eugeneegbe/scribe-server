@@ -2,6 +2,7 @@
 import sys
 
 import json
+import unicodedata
 
 from urllib.parse import urlsplit
 
@@ -35,6 +36,16 @@ def convert_date(date_str):
     print(date_str, file=sys.stderr)
     date = date_str.split(' ');
     return date[1] + ' ' + date[0] + ', ' + date[2]
+
+
+def decode_text(text):
+    try:
+        text = text.decode('UTF-8')
+    except (UnicodeDecodeError, AttributeError):
+        pass
+    return "".join(char for char in
+                   unicodedata.normalize('NFKD', text)
+                   if unicodedata.category(char) != 'Mn')
 
 
 def get_reference_resource_data(article_name):
@@ -90,14 +101,13 @@ def get_reference_resource_data(article_name):
     count = 0
     for data in all_reference_data:
         if data.lang_code == article.lang_code:
-            count += 1
             data_object = {}
             data_object['content'] = data.summary
             data_object['publication_title'] = data.publication_title
             data_object['url'] = data.url
             data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
             resource_object['resources'].append(data_object)
-    resource_object['article_name'] = article_name
+    resource_object['article_name'] = decode_text(article_name)
     return resource_object
 
 
@@ -106,7 +116,7 @@ def get_reference_data(url):
     reference = Reference.query.filter_by(url=url).first()
     if reference is not None:
         reference_data['publisher_name'] = reference.publisher_name
-        reference_data['publication_title'] = reference.publication_title
+        reference_data['publication_title'] = decode_text(reference.publication_title)
         reference_data['publication_date'] = convert_date(reference.publication_date.strftime('%d %B %Y'))
         reference_data['retrieved_date'] = convert_date(reference.retrieved_date.strftime('%d %B %Y'))
     return reference_data
@@ -128,7 +138,7 @@ def get_section_data(article_name):
     for section_data in sections_data:
         if section_data.lang_code == article.lang_code:
             section = {}
-            section['line'] = section_data.label
+            section['line'] = decode_text(section_data.label)
             section['number'] = str(section_count + 1)
             sections.append(section)
             section_count += 1

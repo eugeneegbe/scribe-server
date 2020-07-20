@@ -78,6 +78,7 @@ def AddReferenceStatsData():
         return '<h2> Unable to get data at the moment</h2>'
     return ('Success')
 
+
 @main.route('/api/v1/stats/references', methods=['POST', 'GET'])
 def getReferenceStatsData():
     url = request.args.get('url')
