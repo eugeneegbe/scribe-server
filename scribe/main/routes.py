@@ -31,7 +31,7 @@ def getReferenceResourceData():
     '''
     Get data about reference url which will be used to construct template for VE
     '''
-    url = request.args.get('link')
+    url = request.query_string.decode('ascii').split('=')[1]
     reference_data = get_reference_data(url)
     if reference_data:
         return reference_data
