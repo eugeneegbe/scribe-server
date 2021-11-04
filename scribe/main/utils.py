@@ -97,16 +97,16 @@ def get_reference_resource_data(article_name):
 
 
     # collect all references in that language code
-    all_reference_data = Reference.query.filter_by(wd_q_id=article.wd_q_id).all()
+    all_reference_data = Reference.query.filter_by(article_id=article.id).all()
     count = 0
     for data in all_reference_data:
-        if data.lang_code == article.lang_code:
-            data_object = {}
-            data_object['content'] = data.summary
-            data_object['publication_title'] = data.publication_title
-            data_object['url'] = data.url
-            data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
-            resource_object['resources'].append(data_object)
+
+        data_object = {}
+        data_object['content'] = data.summary
+        data_object['publication_title'] = data.publication_title
+        data_object['url'] = data.url
+        data_object['domain'] = Article.query.filter_by(name=article_name).first().domain
+        resource_object['resources'].append(data_object)
     resource_object['article_name'] = decode_text(article_name)
     return resource_object
 
@@ -134,7 +134,7 @@ def get_section_data(article_name):
     parse = {}
     sections = []
     article = Article.query.filter_by(name=article_name.lower()).first()
-    sections_data = Section.query.filter_by(wd_q_id=article.wd_q_id).all()
+    sections_data = Section.query.filter_by(article_id=article.id).all()
     for section_data in sections_data:
         if section_data.lang_code == article.lang_code:
             section = {}

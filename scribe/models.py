@@ -4,14 +4,11 @@ from scribe import db
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True)
-    wd_item = db.Column(db.Text)
     name = db.Column(db.Text, nullable=False)
     wd_q_id = db.Column(db.String(20), nullable=False)
     lang_code = db.Column(db.String(7))
     domain = db.Column(db.Text)
-    red_link = db.Column(db.Text)
     tag = db.Column(db.Text)
-    category = db.Column(db.String(10))
     retrieved_date = db.Column(db.Date, nullable=False,
                     default=datetime.now().strftime('%Y-%m-%d'))
 
@@ -31,7 +28,6 @@ class Section(db.Model):
     article_id = db.Column(db.Text)
     order_number = db.Column(db.Integer)
     content_selection_method = db.Column(db.Text)
-    wd_q_id = db.Column(db.String(20), nullable=False)
     lang_code = db.Column(db.String(7))
     quality = db.Column(db.String(25))
     retrieved_date = db.Column(db.Date, nullable=False,
@@ -52,7 +48,7 @@ class Reference(db.Model):
     publisher_name = db.Column(db.Text)
     wd_q_id = db.Column(db.String(20), nullable=False)
     publication_title = db.Column(db.Text)
-    lang_code = db.Column(db.String(7))
+    # lang_code = db.Column(db.String(7))
     summary = db.Column(db.Text)
     url = db.Column(db.Text)
     quality = db.Column(db.String(25))
